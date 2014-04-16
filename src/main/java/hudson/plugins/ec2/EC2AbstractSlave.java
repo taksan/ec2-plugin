@@ -248,7 +248,11 @@ public abstract class EC2AbstractSlave extends Slave {
     void idleTimeout() {
     	LOGGER.info("EC2 instance idle time expired: "+getInstanceId());
     	if (!stopOnTerminate) {
-    		terminate();
+    		Computer.threadPoolForRemoting.execute(new Runnable() {
+				public void run() {
+					terminate();
+				}
+			});
     	} else {
     		stop();
     	}
